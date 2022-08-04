@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
+const { addToDo } = require('../routes/index.controller')
 
-router.get('/', function (req, res, next) {
-  res.end('to-do list mobile app')
-})
+// ADD TODO LIST
+router.post('/add', addToDo)
 
 module.exports = router
