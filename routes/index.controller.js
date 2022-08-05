@@ -27,6 +27,41 @@ async function addToDo (req, res, next) {
   }
 }
 
+async function getToDos (req, res, next) {
+  try {
+    await ToDo.find({})
+      .lean()
+      .sort({ _id: -1 })
+      .then(todos => {
+        if (todos.length === 0) {
+          return res.status(400).json({ message: 'There are no tasks in the ToDo List.' })
+        }
+        return res.status(200).json(todos)
+      })
+      .catch(error => console.error(error))
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
+async function getToDo (req, res, next) {
+  try {
+    await ToDo.findOne({ _id: req.params.id })
+      .lean()
+      .select(['title', 'description', 'deadline', 'status'])
+      .then(todo => {
+        if (!todo) return res.status(400).json({ message: 'This task does not exist.' })
+        return res.status(200).json(todo)
+      })
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
 module.exports = {
-  addToDo
+  addToDo,
+  getToDos,
+  getToDo
 }
