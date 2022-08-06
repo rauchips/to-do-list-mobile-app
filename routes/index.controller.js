@@ -60,8 +60,30 @@ async function getToDo (req, res, next) {
   }
 }
 
+async function patchToDo (req, res, next) {
+  try {
+    await ToDo.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true })
+      .lean()
+      .select(['title', 'description', 'deadline', 'status'])
+      .then(todo => {
+        if (!todo) return res.status(400).json({ message: 'This task does not exist.' })
+
+        // Validate deadline is later than the current time
+        const date = new Date(req.body.deadline)
+        if (moment(date).isBefore(new Date())) {
+          return res.status(400).json({ message: 'Select current date and onwards.' })
+        }
+        return res.status(200).json(todo)
+      })
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
 module.exports = {
   addToDo,
   getToDos,
-  getToDo
+  getToDo,
+  patchToDo
 }
