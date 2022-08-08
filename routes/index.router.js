@@ -19,12 +19,12 @@ router.get('/getAll', getToDos)
 router.get('/getOne/:id', getToDo)
 
 // PATCH ONE TODO
-router.patch('/putOne/:id', patchToDo)
+router.patch('/patchOne/:id', patchToDo)
 
 // DELETE ONE TODO
 router.delete('/delOne/:id', delToDo)
 
 // DELETE MANY TODO
-router.delete('/delMany/', delManyToDo)
+router.delete('/delMany', delManyToDo)
 
 module.exports = router
