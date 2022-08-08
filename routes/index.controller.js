@@ -33,7 +33,7 @@ async function getToDos (req, res, next) {
       .lean()
       .sort({ _id: -1 })
       .then(todos => {
-        if (todos.length === 0) {
+        if (!todos.length) {
           return res.status(400).json({ message: 'There are no tasks in the ToDo List.' })
         }
         return res.status(200).json(todos)
@@ -98,10 +98,26 @@ async function delToDo (req, res, next) {
   }
 }
 
+async function delManyToDo (req, res, next) {
+  try {
+    await ToDo.deleteMany({ _id: req.body.id })
+      .then(todo => {
+        if (!todo.deletedCount) return res.status(400).json({ message: 'Tasks do not exist' })
+
+        return res.status(200).json({ message: 'Task deleted successfully.' })
+      })
+      .catch(error => console.error(error))
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
 module.exports = {
   addToDo,
   getToDos,
   getToDo,
   patchToDo,
-  delToDo
+  delToDo,
+  delManyToDo
 }

@@ -5,7 +5,8 @@ const {
   getToDos,
   getToDo,
   patchToDo,
-  delToDo
+  delToDo,
+  delManyToDo
 } = require('../routes/index.controller')
 
 // ADD TODO LIST
@@ -22,5 +23,8 @@ router.patch('/putOne/:id', patchToDo)
 
 // DELETE ONE TODO
 router.delete('/delOne/:id', delToDo)
+
+// DELETE MANY TODO
+router.delete('/delMany/', delManyToDo)
 
 module.exports = router
