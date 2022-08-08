@@ -54,6 +54,7 @@ async function getToDo (req, res, next) {
         if (!todo) return res.status(400).json({ message: 'This task does not exist.' })
         return res.status(200).json(todo)
       })
+      .catch(error => console.error(error))
   } catch (error) {
     console.error(error)
     next(error)
@@ -75,6 +76,22 @@ async function patchToDo (req, res, next) {
         }
         return res.status(200).json(todo)
       })
+      .catch(error => console.error(error))
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
+async function delToDo (req, res, next) {
+  try {
+    await ToDo.deleteOne({ _id: req.params.id })
+      .then(todo => {
+        if (!todo.deletedCount) return res.status(400).json({ message: 'Task does not exist' })
+
+        return res.status(200).json({ message: 'Task deleted successfully.' })
+      })
+      .catch(error => console.error(error))
   } catch (error) {
     console.error(error)
     next(error)
@@ -85,5 +102,6 @@ module.exports = {
   addToDo,
   getToDos,
   getToDo,
-  patchToDo
+  patchToDo,
+  delToDo
 }
