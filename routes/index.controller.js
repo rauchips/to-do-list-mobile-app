@@ -83,6 +83,21 @@ async function patchToDo (req, res, next) {
   }
 }
 
+async function patchManyToDo (req, res, next) {
+  try {
+    await ToDo.updateMany({ _id: req.body.id }, { status: true }, { multi: true, new: true })
+      .then(todo => {
+        if (!todo.modifiedCount) return res.status(400).json({ message: 'This task does not exist.' })
+
+        return res.status(200).json({ message: 'Tasks status updated successfully.' })
+      })
+      .catch(error => console.error(error))
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
 async function delToDo (req, res, next) {
   try {
     await ToDo.deleteOne({ _id: req.params.id })
@@ -118,6 +133,7 @@ module.exports = {
   getToDos,
   getToDo,
   patchToDo,
+  patchManyToDo,
   delToDo,
   delManyToDo
 }

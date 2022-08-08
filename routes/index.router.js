@@ -5,6 +5,7 @@ const {
   getToDos,
   getToDo,
   patchToDo,
+  patchManyToDo,
   delToDo,
   delManyToDo
 } = require('../routes/index.controller')
@@ -20,6 +21,9 @@ router.get('/getOne/:id', getToDo)
 
 // PATCH ONE TODO
 router.patch('/patchOne/:id', patchToDo)
+
+// PATCH MANY COMPLETE TODO
+router.patch('/patchMany', patchManyToDo)
 
 // DELETE ONE TODO
 router.delete('/delOne/:id', delToDo)
