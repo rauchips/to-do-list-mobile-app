@@ -7,7 +7,11 @@ const todosSchema = mongoose.Schema({
   status: {
     type: Boolean,
     default: false
+  },
+  user: {
+    type: mongoose.Types.ObjectId,
+    ref: 'users'
   }
 }, { timestamps: true })
 
-module.exports = mongoose.model('ToDo', todosSchema)
+module.exports = mongoose.model('todos', todosSchema)

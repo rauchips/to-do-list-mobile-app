@@ -1,4 +1,4 @@
-const ToDo = require('../models/todos.model')
+const ToDo = require('../../models/todos.model')
 const moment = require('moment')
 
 async function addToDo (req, res, next) {
@@ -119,7 +119,7 @@ async function delManyToDo (req, res, next) {
       .then(todo => {
         if (!todo.deletedCount) return res.status(400).json({ message: 'Tasks do not exist' })
 
-        return res.status(200).json({ message: 'Task deleted successfully.' })
+        return res.status(200).json({ message: 'Tasks deleted successfully.' })
       })
       .catch(error => console.error(error))
   } catch (error) {
