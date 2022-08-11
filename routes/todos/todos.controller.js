@@ -3,13 +3,13 @@ const moment = require('moment')
 
 async function addToDo (req, res, next) {
   try {
-    const { title, description, deadline } = req.body
+    const { title, description, deadline, user } = req.body
 
     const date = new Date(deadline)
 
     // Validate if req.body is empty
-    if (!title || !description || !date) {
-      return res.status(400).json({ message: 'ToDo could be missing a title, desription or deadline.' })
+    if (!title || !description || !date || !user) {
+      return res.status(400).json({ message: 'ToDo could be missing a title, desription, deadline or user.' })
     }
 
     // Validate deadline is later than the current time
@@ -29,30 +29,15 @@ async function addToDo (req, res, next) {
 
 async function getToDos (req, res, next) {
   try {
-    await ToDo.find({})
+    await ToDo.find({ user: req.params.id })
       .lean()
       .sort({ _id: -1 })
+      .select(['title', 'description', 'deadline', 'status', 'user'])
       .then(todos => {
         if (!todos.length) {
-          return res.status(400).json({ message: 'There are no tasks in the ToDo List.' })
+          return res.status(400).json({ message: 'There are no tasks for this user.' })
         }
         return res.status(200).json(todos)
-      })
-      .catch(error => console.error(error))
-  } catch (error) {
-    console.error(error)
-    next(error)
-  }
-}
-
-async function getToDo (req, res, next) {
-  try {
-    await ToDo.findOne({ _id: req.params.id })
-      .lean()
-      .select(['title', 'description', 'deadline', 'status'])
-      .then(todo => {
-        if (!todo) return res.status(400).json({ message: 'This task does not exist.' })
-        return res.status(200).json(todo)
       })
       .catch(error => console.error(error))
   } catch (error) {
@@ -65,7 +50,7 @@ async function patchToDo (req, res, next) {
   try {
     await ToDo.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true })
       .lean()
-      .select(['title', 'description', 'deadline', 'status'])
+      .select(['title', 'description', 'deadline', 'status', 'user'])
       .then(todo => {
         if (!todo) return res.status(400).json({ message: 'This task does not exist.' })
 
@@ -85,7 +70,9 @@ async function patchToDo (req, res, next) {
 
 async function patchManyToDo (req, res, next) {
   try {
-    await ToDo.updateMany({ _id: req.body.id }, { status: true }, { multi: true, new: true })
+    const { user } = req.body
+
+    await ToDo.updateMany({ user }, { status: true }, { multi: true, new: true })
       .then(todo => {
         if (!todo.modifiedCount) return res.status(400).json({ message: 'This task does not exist.' })
 
@@ -115,7 +102,9 @@ async function delToDo (req, res, next) {
 
 async function delManyToDo (req, res, next) {
   try {
-    await ToDo.deleteMany({ _id: req.body.id })
+    const { user } = req.body
+
+    await ToDo.deleteMany({ user })
       .then(todo => {
         if (!todo.deletedCount) return res.status(400).json({ message: 'Tasks do not exist' })
 
@@ -131,7 +120,6 @@ async function delManyToDo (req, res, next) {
 module.exports = {
   addToDo,
   getToDos,
-  getToDo,
   patchToDo,
   patchManyToDo,
   delToDo,

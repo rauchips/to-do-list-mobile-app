@@ -3,7 +3,6 @@ const router = express.Router()
 const {
   addToDo,
   getToDos,
-  getToDo,
   patchToDo,
   patchManyToDo,
   delToDo,
@@ -14,10 +13,7 @@ const {
 router.post('/add', addToDo)
 
 // GET ALL TODOs
-router.get('/getAll', getToDos)
-
-// GET ONE TODO
-router.get('/getOne/:id', getToDo)
+router.get('/getAll/:id', getToDos)
 
 // PATCH ONE TODO
 router.patch('/patchOne/:id', patchToDo)
