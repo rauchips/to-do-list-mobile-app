@@ -5,6 +5,6 @@ const {
 } = require('./users.controller')
 
 // ADD USER
-router.post('/add', addUser)
+router.post('/create', addUser)
 
 module.exports = router

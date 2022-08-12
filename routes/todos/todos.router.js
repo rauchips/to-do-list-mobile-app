@@ -10,21 +10,21 @@ const {
 } = require('./todos.controller')
 
 // ADD TODO LIST
-router.post('/add', addToDo)
+router.post('/create', addToDo)
 
 // GET ALL TODOs
-router.get('/getAll/:id', getToDos)
+router.get('/read/:id', getToDos)
 
 // PATCH ONE TODO
-router.patch('/patchOne/:id', patchToDo)
+router.patch('/update-one/:id', patchToDo)
 
 // PATCH MANY COMPLETE TODO
-router.patch('/patchMany', patchManyToDo)
+router.patch('/update-many', patchManyToDo)
 
 // DELETE ONE TODO
-router.delete('/delOne/:id', delToDo)
+router.delete('/delete-one/:id', delToDo)
 
 // DELETE MANY TODO
-router.delete('/delMany', delManyToDo)
+router.delete('/delete-many', delManyToDo)
 
 module.exports = router
