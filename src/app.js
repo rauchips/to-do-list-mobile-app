@@ -4,8 +4,8 @@ const logger = require('morgan')
 const helmet = require('helmet')
 require('dotenv').config()
 
-const todoRouter = require('./routes/todos/todos.router')
-const userRouter = require('./routes/users/users.router')
+const todoRouter = require('./api/routes/todos.router')
+const userRouter = require('./api/routes/users.router')
 
 const connectDB = require('./config/db.config')
 

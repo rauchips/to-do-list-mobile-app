@@ -7,7 +7,7 @@ const {
   patchManyToDo,
   delToDo,
   delManyToDo
-} = require('./todos.controller')
+} = require('../controllers/todos.controller')
 
 // ADD TODO LIST
 router.post('/create', addToDo)

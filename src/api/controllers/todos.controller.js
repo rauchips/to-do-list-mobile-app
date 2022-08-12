@@ -1,4 +1,4 @@
-const ToDo = require('../../models/todos.model')
+const ToDo = require('../models/todos.model')
 const moment = require('moment')
 
 async function addToDo (req, res, next) {
