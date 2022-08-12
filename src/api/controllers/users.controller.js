@@ -1,11 +1,8 @@
-const { v4: uuidv4 } = require('uuid')
-
-const User = require('../models/users.model')
+const { createUser } = require('../services/users.service')
 
 async function addUser (req, res, next) {
   try {
-    // Create a new user
-    User.create({ user: uuidv4() })
+    await createUser()
       .then((user) => res.status(201).json(user))
       .catch(error => console.error(error))
   } catch (error) {
