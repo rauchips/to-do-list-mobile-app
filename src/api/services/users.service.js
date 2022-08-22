@@ -7,6 +7,10 @@ class UserService {
     const user = await UserModel.create({ user: uuidv4() })
     return user
   }
+
+  static async getUser (query) {
+    return await UserModel.findOne({ _id: query })
+  }
 }
 
 module.exports = UserService
