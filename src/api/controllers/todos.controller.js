@@ -1,11 +1,22 @@
-const ToDo = require('../../models/todos.model')
 const moment = require('moment')
+
+const {
+  createTodo,
+  findToDos,
+  changeToDo,
+  changeManyToDos,
+  removeToDo,
+  removeManyToDos
+} = require('../services/todos.service')
+const { getUser } = require('../services/users.service')
 
 async function addToDo (req, res, next) {
   try {
     const { title, description, deadline, user } = req.body
-
     const date = new Date(deadline)
+
+    // Check if the user exists
+    if (!await getUser(user)) return res.status(400).json({ message: 'This user does not exist.' })
 
     // Validate if req.body is empty
     if (!title || !description || !date || !user) {
@@ -18,8 +29,10 @@ async function addToDo (req, res, next) {
     }
 
     // Create a new todo list
-    ToDo.create(req.body)
-      .then((todo) => res.status(201).json(todo))
+    await createTodo(req.body)
+      .then((todo) => {
+        return res.status(201).json(todo)
+      })
       .catch(error => console.error(error))
   } catch (error) {
     console.error(error)
@@ -29,10 +42,7 @@ async function addToDo (req, res, next) {
 
 async function getToDos (req, res, next) {
   try {
-    await ToDo.find({ user: req.params.id })
-      .lean()
-      .sort({ _id: -1 })
-      .select(['title', 'description', 'deadline', 'status', 'user'])
+    findToDos({ user: req.params.id })
       .then(todos => {
         if (!todos.length) {
           return res.status(400).json({ message: 'There are no tasks for this user.' })
@@ -48,9 +58,7 @@ async function getToDos (req, res, next) {
 
 async function patchToDo (req, res, next) {
   try {
-    await ToDo.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true })
-      .lean()
-      .select(['title', 'description', 'deadline', 'status', 'user'])
+    changeToDo({ _id: req.params.id }, req.body)
       .then(todo => {
         if (!todo) return res.status(400).json({ message: 'This task does not exist.' })
 
@@ -72,7 +80,7 @@ async function patchManyToDo (req, res, next) {
   try {
     const { user } = req.body
 
-    await ToDo.updateMany({ user }, { status: true }, { multi: true, new: true })
+    await changeManyToDos({ user })
       .then(todo => {
         if (!todo.modifiedCount) return res.status(400).json({ message: 'This task does not exist.' })
 
@@ -87,7 +95,7 @@ async function patchManyToDo (req, res, next) {
 
 async function delToDo (req, res, next) {
   try {
-    await ToDo.deleteOne({ _id: req.params.id })
+    await removeToDo({ _id: req.params.id })
       .then(todo => {
         if (!todo.deletedCount) return res.status(400).json({ message: 'Task does not exist' })
 
@@ -104,7 +112,7 @@ async function delManyToDo (req, res, next) {
   try {
     const { user } = req.body
 
-    await ToDo.deleteMany({ user })
+    await removeManyToDos({ user })
       .then(todo => {
         if (!todo.deletedCount) return res.status(400).json({ message: 'Tasks do not exist' })
 

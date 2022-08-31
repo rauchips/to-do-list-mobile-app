@@ -10,7 +10,8 @@ const todosSchema = mongoose.Schema({
   },
   user: {
     type: mongoose.Types.ObjectId,
-    ref: 'users'
+    ref: 'users',
+    immutable: true
   }
 }, { timestamps: true })
 
